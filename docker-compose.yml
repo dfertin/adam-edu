@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: lms_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: super_password_2026
+      POSTGRES_DB: lms_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    image: python:3.11-slim
+    container_name: lms_backend
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    command: python -c "print('Backend skeleton is ready')"
+
+  frontend:
+    image: node:20-alpine
+    container_name: lms_frontend
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "5173:5173"
+    command: sh -c "echo 'Frontend skeleton is ready'"
+
+volumes:
+  postgres_data:
