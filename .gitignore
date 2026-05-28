@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.db
+.env
+uploads/*
+!uploads/.gitkeep
+.DS_Store
+*.log
+.vite/
+client/dist/
