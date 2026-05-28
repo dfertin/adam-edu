@@ -1,11 +1,13 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:15-alpine
     container_name: lms_postgres
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: super_password_2026
-      POSTGRES_DB: lms_db
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: education_platform
     ports:
       - "5432:5432"
     volumes:
@@ -15,19 +17,23 @@ services:
     image: python:3.11-slim
     container_name: lms_backend
     volumes:
-      - ./backend:/app
+      - ./server:/app
     ports:
       - "8000:8000"
-    command: python -c "print('Backend skeleton is ready')"
+    working_dir: /app
+    command: sh -c "pip install --no-cache-dir -r requirements.txt && python -c 'from app.database import Base, engine; from app.models import User; Base.metadata.create_all(bind=engine)' && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    depends_on:
+      - postgres
 
   frontend:
     image: node:20-alpine
     container_name: lms_frontend
     volumes:
-      - ./frontend:/app
+      - ./client:/app
     ports:
       - "5173:5173"
-    command: sh -c "echo 'Frontend skeleton is ready'"
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host"
 
 volumes:
   postgres_data:
