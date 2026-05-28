@@ -23,7 +23,7 @@ services:
     ports:
       - "8000:8000"
     working_dir: /app
-    command: sh -c "pip install --no-cache-dir -r requirements.txt && python -c 'from app.database import Base, engine; from app.models import User; Base.metadata.create_all(bind=engine)' && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    command: sh -c "pip install --no-cache-dir -r requirements.txt && python -c 'from app.database import base, engine; from app.models import *; base.metadata.create_all(bind=engine)' && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     depends_on:
       - postgres
 
@@ -31,7 +31,7 @@ services:
     image: node:20-alpine
     container_name: lms_frontend
     volumes:
-      - ./frontend:/app
+      - ./client:/app
     ports:
       - "5173:5173"
     working_dir: /app
